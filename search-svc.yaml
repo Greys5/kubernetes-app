@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: app
+  template:
+    metadata:
+      labels:
+        role: app
+    spec:
+      containers:
+      - name: search-service
+        image: eugeele/covachapp:search-service
+        ports:
+        - containerPort: 9000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: search-service
+spec:
+  ports:
+  - port: 9000
+    targetPort: 9000
+  selector:
+    role: app

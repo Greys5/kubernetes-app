@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: app
+  template:
+    metadata:
+      labels:
+        role: app
+    spec:
+      containers:
+      - name: auth-service
+        image: eugeele/covachapp:auth-service
+        ports:
+        - containerPort: 8000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+spec:
+  ports:
+  - port: 8000
+    targetPort: 8000
+  selector:
+    role: app
