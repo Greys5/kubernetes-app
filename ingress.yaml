@@ -1,0 +1,12 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: auth
+spec:
+  rules:
+  - http:
+      backend:
+        service:
+          name: auth
+          port:
+            number: 8000

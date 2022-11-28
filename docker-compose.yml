@@ -1,6 +1,15 @@
 version: '3.8'
 
 services:
+  nginx:
+    hostname: nginx
+    build:
+      context: ./nginx
+      dockerfile: ../nginx/Dockerfile
+    ports:
+      - 82:80
+
+
   frontend:
     hostname: frontend
     build:
