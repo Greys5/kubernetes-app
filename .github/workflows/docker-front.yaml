@@ -26,7 +26,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: ./frontend
-        file: ./../docker/Dockerfile.next
+        file: ./docker/Dockerfile.next
         builder: ${{ steps.buildx.outputs.name }}
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/challenge:cova-front
