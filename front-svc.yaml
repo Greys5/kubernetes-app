@@ -8,7 +8,6 @@ spec:
   selector:
     matchLabels:
       role: front
-      app: all
   template:
     metadata:
       labels:
@@ -16,23 +15,23 @@ spec:
     spec:
       containers:
       - name: front
-        image: gfs5/challenge:cova-front
-        env:
-          - name: NEXT_PUBLIC_AUTH_SERVICE_BASE_URL
-            valueFrom:
-              configMapKeyRef:
-                name: front-cfgmp
-                key: NEXT_PUBLIC_AUTH_SERVICE_BASE_URL
-          - name: NEXT_PUBLIC_PRODUCT_SERVICE_BASE_URL
-            valueFrom:
-              configMapKeyRef:
-                name: front-cfgmp
-                key: NEXT_PUBLIC_PRODUCT_SERVICE_BASE_URL
-          - name: NEXT_PUBLIC_SEARCH_SERVICE_BASE_URL
-            valueFrom:
-              configMapKeyRef:
-                name: front-cfgmp
-                key: NEXT_PUBLIC_SEARCH_SERVICE_BASE_URL                          
+        image: gfs5/challenge:front
+        # env:
+        #   - name: NEXT_PUBLIC_AUTH_SERVICE_BASE_URL
+        #     valueFrom:
+        #       configMapKeyRef:
+        #         name: front-cfgmp
+        #         key: NEXT_PUBLIC_AUTH_SERVICE_BASE_URL
+        #   - name: NEXT_PUBLIC_PRODUCT_SERVICE_BASE_URL
+        #     valueFrom:
+        #       configMapKeyRef:
+        #         name: front-cfgmp
+        #         key: NEXT_PUBLIC_PRODUCT_SERVICE_BASE_URL
+        #   - name: NEXT_PUBLIC_SEARCH_SERVICE_BASE_URL
+        #     valueFrom:
+        #       configMapKeyRef:
+        #         name: front-cfgmp
+        #         key: NEXT_PUBLIC_SEARCH_SERVICE_BASE_URL                          
         ports:
         - containerPort: 3000
 
@@ -49,33 +48,32 @@ spec:
     targetPort: 3000
   selector:
     role: front
-    app: all
 
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: front-cfgmp
-  namespace: hola
-data:
-  NEXT_PUBLIC_AUTH_SERVICE_BASE_URL: "http://lolita:8000"
-  NEXT_PUBLIC_PRODUCT_SERVICE_BASE_URL: "http://localhost:8001"
-  NEXT_PUBLIC_SEARCH_SERVICE_BASE_URL: "http://localhost:9000"
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: front-cfgmp
+#   namespace: hola
+# data:
+#   NEXT_PUBLIC_AUTH_SERVICE_BASE_URL: "http://lolita:8000"
+#   NEXT_PUBLIC_PRODUCT_SERVICE_BASE_URL: "http://localhost:8001"
+#   NEXT_PUBLIC_SEARCH_SERVICE_BASE_URL: "http://localhost:9000"
 
 
 
 
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: front-cfgmp
-  namespace: hola
-data:
-  FASTAPI_PORT: "8001"
-  POSTGRES_PASSWORD: "postgres"
-  POSTGRES_HOST: "products-db"
-  POSTGRES_PORT: "5432"
-  POSTGRES_DB: "products"
-  RABBITMQ_URL: "amqps://YOUR_AMPQ_KEY_URL_GOES_HERE"
-  DATABASE_URL: "postgresql+asyncpg://postgres:postgres@products-db:5432/postgres"
-  AUTH_SERVICE_BASE_URL: "http://auth-service:8000"
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: products-cfgmp
+#   namespace: hola
+# data:
+#   FASTAPI_PORT: "8001"
+#   POSTGRES_PASSWORD: "postgres"
+#   POSTGRES_HOST: "products-db"
+#   POSTGRES_PORT: "5432"
+#   POSTGRES_DB: "products"
+#   RABBITMQ_URL: "amqps://YOUR_AMPQ_KEY_URL_GOES_HERE"
+#   DATABASE_URL: "postgresql+asyncpg://postgres:postgres@products-db:5432/postgres"
+#   AUTH_SERVICE_BASE_URL: "http://auth-service:8000"

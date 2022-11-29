@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: search-service
-        image: eugeele/covachapp:search-service
+        image: gfs5/challenge:search-s
         ports:
         - containerPort: 9000
 

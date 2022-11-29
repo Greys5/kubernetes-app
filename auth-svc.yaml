@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: auth-service
-        image: eugeele/covachapp:auth-service
+        image: gfs5/challenge:auth
         ports:
         - containerPort: 8000
 
@@ -31,3 +31,25 @@ spec:
     targetPort: 8000
   selector:
     role: auth
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-db
+  namespace: hola
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: auth
+  template:
+    metadata:
+      labels:
+        role: auth
+    spec:
+      containers:
+      - name: auth-db
+        image: postgres:14.1-alpine3.15
+        ports:
+        - containerPort: 5432

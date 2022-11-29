@@ -1,0 +1,270 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: nginx
+  template:
+    metadata:
+      labels:
+        role: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: eugeele/covachapp:nginx
+        ports:
+        - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  selector:
+    role: nginx
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: front
+  template:
+    metadata:
+      labels:
+        role: front
+    spec:
+      containers:
+      - name: front
+        image: eugeele/covachapp:frontend
+        ports:
+        - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: front
+spec:
+  ports:
+  - port: 3000
+    targetPort: 3000
+  selector:
+    role: front
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: auth
+  template:
+    metadata:
+      labels:
+        role: auth
+    spec:
+      containers:
+      - name: auth-service
+        image: eugeele/covachapp:auth-service
+        ports:
+        - containerPort: 8000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-svc
+  labels:
+    role: auth
+#  annotations:
+#    cloud.google.com/backend-config: '{"ports": {"80":"my-backendconfig"}}'
+#    cloud.google.com/neg: '{"ingress": true}'
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000
+  selector:
+    role: auth
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: auth
+  template:
+    metadata:
+      labels:
+        role: auth
+    spec:
+      containers:
+      - name: auth-db
+        image: postgres:14.1-alpine3.15
+        ports:
+        - containerPort: 5432
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: products-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: products-s
+  template:
+    metadata:
+      labels:
+        role: products-s
+    spec:
+      containers:
+      - name: products-service
+        image: eugeele/covachapp:products-service
+        ports:
+        - containerPort: 8001
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: products-service
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 8001
+    targetPort: 8001
+  selector:
+    role: products-s
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: products-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: products-s
+  template:
+    metadata:
+      labels:
+        role: products-s
+    spec:
+      containers:
+      - name: products-service
+        image: postgres:14.1-alpine3.15
+        ports:
+        - containerPort: 5433
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: search-c
+  template:
+    metadata:
+      labels:
+        role: search-c
+    spec:
+      containers:
+      - name: search-consumer
+        image: eugeele/covachapp:search-consumer
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: search-s
+  template:
+    metadata:
+      labels:
+        role: search-s
+    spec:
+      containers:
+      - name: search-service
+        image: eugeele/covachapp:search-service
+        ports:
+        - containerPort: 9000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: search-service
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 9000
+    targetPort: 9000
+  selector:
+    role: search-s
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: search-s
+  template:
+    metadata:
+      labels:
+        role: search-s
+    spec:
+      containers:
+      - name: search-service
+        image: mongo:4.4.4
+        ports:
+        - containerPort: 27017
+      volumes:
+      - name: db-data
+        emptyDir: {}
+      - name: db-config
+        emptyDir: {}
