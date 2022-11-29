@@ -3,10 +3,6 @@ on:
   push:
     branches:
       - 'main'
-env:
-  NEXT_PUBLIC_AUTH_SERVICE_BASE_URL: http://localhost:8000
-  NEXT_PUBLIC_PRODUCT_SERVICE_BASE_URL: http://localhost:8001
-  NEXT_PUBLIC_SEARCH_SERVICE_BASE_URL: http://localhost:9000
   
 jobs:
   build:
@@ -24,6 +20,10 @@ jobs:
 
     - name: Build and push
       uses: docker/build-push-action@v2
+      env:
+        NEXT_PUBLIC_AUTH_SERVICE_BASE_URL: "http://localhost:8000"
+        NEXT_PUBLIC_PRODUCT_SERVICE_BASE_URL: "http://localhost:8001"
+        NEXT_PUBLIC_SEARCH_SERVICE_BASE_URL: "http://localhost:9000"
       with:
         context: ./frontend
         file: ./docker/Dockerfile.next
