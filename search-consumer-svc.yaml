@@ -2,11 +2,13 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: search-consumer
+  namespace: hola
 spec:
   replicas: 1
   selector:
     matchLabels:
       role: search-c
+      app: all
   template:
     metadata:
       labels:
@@ -15,17 +17,18 @@ spec:
       containers:
       - name: search-consumer
         image: eugeele/covachapp:search-consumer
-        ports:
-        - containerPort: 9000
+        # ports:
+        # - containerPort: 9000
 
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: search-consumer
-spec:
-  ports:
-  - port: 9000
-    targetPort: 9000
-  selector:
-    role: search-c
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: search-consumer
+#   namespace: hola
+# spec:
+#   ports:
+#   - port: 9000
+#     targetPort: 9000
+#   selector:
+#     role: search-c

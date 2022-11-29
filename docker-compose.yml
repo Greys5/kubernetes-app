@@ -4,8 +4,8 @@ services:
   nginx:
     hostname: nginx
     build:
-      context: ../../nginx
-      dockerfile: ./../nginx/Dockerfile
+      context: ./nginx
+      dockerfile: ../nginx/Dockerfile
     ports:
       - 82:80
 
@@ -13,24 +13,24 @@ services:
   frontend:
     hostname: frontend
     build:
-      context: ../../frontend
-      dockerfile: ./../docker/Dockerfile.next
+      context: ./frontend
+      dockerfile: ../docker/Dockerfile.next
     ports: 
       - 3002:3000
     env_file:
-      - ../../frontend/.env
+      - ./frontend/.env
     
 
   # API Services
   auth-service:
     hostname: auth-service
     build:
-      context: ../../services/auth
-      dockerfile: ./../../docker/Dockerfile.python
+      context: ./services/auth
+      dockerfile: ../../docker/Dockerfile.python
     ports:
       - 8000:8000
     env_file:
-      - ../../services/auth/.env
+      - ./services/auth/.env
     depends_on:
       - auth-db
 
@@ -40,17 +40,17 @@ services:
     ports:
       - 5432:5432
     env_file:
-      - ../../services/auth/.env
+      - ./services/auth/.env
 
   products-service:
     hostname: products-service
     build:
-      context: ../../services/products
-      dockerfile: ./../../docker/Dockerfile.python
+      context: ./services/products
+      dockerfile: ../../docker/Dockerfile.python
     ports:
       - 8001:8001
     env_file:
-      - ../../services/products/.env
+      - ./services/products/.env
     depends_on:
       - products-db
 
@@ -60,26 +60,26 @@ services:
     ports:
       - 5433:5432
     env_file:
-      - ../../services/products/.env
+      - ./services/products/.env
 
   search-service:
     build:
-      context: ../../services/search
-      dockerfile: ./../../docker/Dockerfile.go
+      context: ./services/search
+      dockerfile: ../../docker/Dockerfile.go
     ports:
       - 9000:9000
     hostname: search-service
     env_file:
-      - ../../services/search/.env
+      - ./services/search/.env
     depends_on:
       - search-db
 
   search-consumer:
     build:
-      context: ../../services/search
-      dockerfile: ./../../docker/Dockerfile.go
+      context: ./services/search
+      dockerfile: ../../docker/Dockerfile.go
     env_file:
-      - ../../services/search/.env
+      - ./services/search/.env
     environment:
       - IS_CONSUMER=1
     depends_on:
