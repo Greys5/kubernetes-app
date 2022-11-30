@@ -4,7 +4,7 @@ on:
     branches:
       - 'main'
     # paths:
-    #   - frontend/**
+    #   - nginx/**
 
 jobs:
   build:
@@ -23,8 +23,8 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v2
       with:
-        context: ./frontend
-        file: ./docker/Dockerfile.next
+        context: ./nginx
+        file: ./nginx/Dockerfile
         builder: ${{ steps.buildx.outputs.name }}
         push: true
-        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/challenge:cova-front
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/challenge:cova-nginx

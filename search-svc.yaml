@@ -18,6 +18,9 @@ spec:
       containers:
       - name: search-service
         image: gfs5/challenge:search-s
+        envFrom:
+          - secretRef:
+              name: search-secrets      
         ports:
         - containerPort: 9000
 

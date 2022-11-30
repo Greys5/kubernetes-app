@@ -1,6 +1,47 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: search-service
+  namespace: hola
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: search-s
+      app: all
+  template:
+    metadata:
+      labels:
+        role: search-s
+        app: all
+    spec:
+      containers:
+      - name: search-service
+        image: gfs5/challenge:search-s
+        envFrom:
+          - secretRef:
+              name: search-secrets      
+        ports:
+        - containerPort: 9000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: search-service
+  namespace: hola
+spec:
+  ports:
+  - port: 9000
+    targetPort: 9000
+  selector:
+    role: search-s
+    app: all
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: search-consumer
   namespace: hola
 spec:
@@ -19,6 +60,10 @@ spec:
         envFrom:
           - secretRef:
               name: search-secrets
+        env:
+          - name: IS_CONSUMER
+            value: 1
+        
 
 ---
 apiVersion: apps/v1

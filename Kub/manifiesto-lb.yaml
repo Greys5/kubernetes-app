@@ -1,0 +1,322 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: nginx
+  template:
+    metadata:
+      labels:
+        role: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: eugeele/covachapp:nginx
+        imagePullPolicy: Always        
+        ports:
+        - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: app
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  selector:
+    role: nginx
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front
+  namespace: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: front
+  template:
+    metadata:
+      labels:
+        role: front
+    spec:
+      containers:
+      - name: front
+        image: eugeele/covachapp:frontend
+        imagePullPolicy: Always
+        envFrom:
+          - secretRef:
+              name: front-secrets        
+        ports:
+        - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: front
+  namespace: app
+spec:
+  ports:
+  - port: 3000
+    targetPort: 3000
+  selector:
+    role: front
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: auth
+  template:
+    metadata:
+      labels:
+        role: auth
+    spec:
+      containers:
+      - name: auth-service
+        image: eugeele/covachapp:auth-service
+        imagePullPolicy: Always
+        envFrom:
+          - secretRef:
+              name: auth-secrets  
+        ports:
+        - containerPort: 8000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-svc
+  namespace: app
+  labels:
+    role: auth
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000
+  selector:
+    role: auth
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-db
+  namespace: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: auth
+  template:
+    metadata:
+      labels:
+        role: auth
+    spec:
+      containers:
+      - name: auth-db
+        image: postgres:14.1-alpine3.15
+        imagePullPolicy: Always
+        envFrom:
+          - secretRef:
+              name: auth-secrets         
+        ports:
+        - containerPort: 5432
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: products-service
+  namespace: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: products-s
+  template:
+    metadata:
+      labels:
+        role: products-s
+    spec:
+      containers:
+      - name: products-service
+        image: eugeele/covachapp:products-service
+        imagePullPolicy: Always
+        envFrom:
+          - secretRef:
+              name: products-secrets        
+        ports:
+        - containerPort: 8001
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: products-service
+  namespace: app
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 8001
+    targetPort: 8001
+  selector:
+    role: products-s
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: products-db
+  namespace: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: products-s
+  template:
+    metadata:
+      labels:
+        role: products-s
+    spec:
+      containers:
+      - name: products-service
+        image: postgres:14.1-alpine3.15
+        imagePullPolicy: Always
+        envFrom:
+          - secretRef:
+              name: products-secrets
+        ports:
+        - containerPort: 5433
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-consumer
+  namespace: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: search-c
+  template:
+    metadata:
+      labels:
+        role: search-c
+    spec:
+      containers:
+      - name: search-consumer
+        image: eugeele/covachapp:search-consumer
+        envFrom:
+          - secretRef:
+              name: search-secrets         
+        imagePullPolicy: Always
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-service
+  namespace: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: search-s
+  template:
+    metadata:
+      labels:
+        role: search-s
+    spec:
+      containers:
+      - name: search-service
+        image: eugeele/covachapp:search-service
+        imagePullPolicy: Always
+        envFrom:
+          - secretRef:
+              name: search-secrets         
+        ports:
+        - containerPort: 9000
+
+---
+apiVersion: v1
+kind: Service
+namespace: app
+metadata:
+  name: search-service
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 9000
+    targetPort: 9000
+  selector:
+    role: search-s
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: search-s
+  template:
+    metadata:
+      labels:
+        role: search-s
+    spec:
+      containers:
+      - name: search-service
+        image: mongo:4.4.4
+        imagePullPolicy: Always
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: root
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: root
+        - name: MONGO_INITDB_DATABASE
+          value: test
+        volumeMounts:
+        - name: db-data
+          mountPath: '/data/db'
+        - name: db-config
+          mountPath: '/data/configdb'
+        ports:
+        - containerPort: 27017
+      volumes:
+      - name: db-data
+        emptyDir: {}
+      - name: db-config
+        emptyDir: {}
