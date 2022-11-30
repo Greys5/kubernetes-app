@@ -57,6 +57,7 @@ spec:
       containers:
       - name: search-consumer
         image: gfs5/challenge:search-con
+        imagePullPolicy: Always
         envFrom:
           - secretRef:
               name: search-secrets

@@ -16,6 +16,7 @@ spec:
       containers:
       - name: auth-service
         image: gfs5/challenge:auth
+        imagePullPolicy: Always
         envFrom:
           - secretRef:
               name: auth-secrets        
