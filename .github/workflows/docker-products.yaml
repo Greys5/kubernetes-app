@@ -1,4 +1,4 @@
-name: CI Build Docker-Frontend
+name: CI Build Docker-Products
 on:
   push:
     branches:
