@@ -89,13 +89,12 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      role: front
+      role: auth
   template:
     metadata:
       labels:
-        role: front
+        role: auth
     spec:
-      hostname: auth
       containers:
       - name: auth-service
         image: gfs5/challenge:cova-auth
@@ -121,7 +120,7 @@ spec:
     targetPort: 8000
     nodePort: 30110
   selector:
-    role: front
+    role: auth
 
 
 ---
