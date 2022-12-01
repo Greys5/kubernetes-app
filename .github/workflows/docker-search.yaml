@@ -26,7 +26,7 @@ jobs:
         IS_CONSUMER: 1
       with:
         context: ./services/products
-        file: ./docker/Dockerfile.python
+        file: ./docker/Dockerfile.go
         builder: ${{ steps.buildx.outputs.name }}
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/challenge:cova-search-consumer

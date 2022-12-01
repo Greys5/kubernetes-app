@@ -250,6 +250,7 @@ spec:
   selector:
     role: products-db
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -330,15 +331,16 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      role: search-s
+      role: search-db
   template:
     metadata:
       labels:
-        role: search-s
+        role: search-db
     spec:
       containers:
-      - name: search-service
+      - name: search-db
         image: mongo:4.4.4
+        # container_name: search-db
         imagePullPolicy: Always
         env:
         - name: MONGO_INITDB_ROOT_USERNAME
