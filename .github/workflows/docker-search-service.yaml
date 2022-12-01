@@ -23,7 +23,7 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v2
       with:
-        context: ./services/products
+        context: ./services/seacrh
         file: ./docker/Dockerfile.go
         builder: ${{ steps.buildx.outputs.name }}
         push: true

@@ -25,7 +25,7 @@ jobs:
       env:
         IS_CONSUMER: 1
       with:
-        context: ./services/products
+        context: ./services/search
         file: ./docker/Dockerfile.go
         builder: ${{ steps.buildx.outputs.name }}
         push: true
