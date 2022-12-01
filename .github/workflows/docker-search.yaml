@@ -3,8 +3,8 @@ on:
   push:
     branches:
       - 'main'
-    # paths:
-    #   - services/search/**
+    paths:
+      - services/search/**
 
 jobs:
   build:

@@ -3,8 +3,8 @@ on:
   push:
     branches:
       - 'main'
-    # paths:
-    #   - services/products/**
+    paths:
+      - services/products/**
 
 jobs:
   build:
