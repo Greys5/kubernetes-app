@@ -69,9 +69,12 @@ metadata:
   name: frontend
   namespace: app
 spec:
+  type: NodePort
   ports:
-  - port: 3000
+  - protocol: TCP
+    port: 3000
     targetPort: 3000
+    nodePort: 30050
   selector:
     role: front
 
