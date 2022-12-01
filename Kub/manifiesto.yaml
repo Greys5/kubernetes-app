@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: eugeele/covachapp:nginx
+        image: gfs5/challenge:cova-nginx
         imagePullPolicy: Always        
         ports:
         - containerPort: 80
@@ -40,7 +40,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: front
+  name: frontend
   namespace: app
 spec:
   replicas: 1
@@ -54,7 +54,7 @@ spec:
     spec:
       containers:
       - name: front
-        image: eugeele/covachapp:frontend
+        image: gfs5/challenge:cova-front
         imagePullPolicy: Always
         envFrom:
           - secretRef:
@@ -66,7 +66,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: front
+  name: frontend
   namespace: app
 spec:
   ports:
@@ -107,14 +107,18 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth-svc
+  name: auth-service
   namespace: app
 spec:
+  type: NodePort
   ports:
-  - port: 8000
+  - protocol: TCP
+    port: 8000
     targetPort: 8000
+    nodePort: 30110
   selector:
     role: auth
+
 
 ---
 
@@ -176,9 +180,12 @@ metadata:
   name: products-service
   namespace: app
 spec:
+  type: NodePort
   ports:
-  - port: 8001
+  - protocol: TCP
+    port: 8001
     targetPort: 8001
+    nodePort: 30120
   selector:
     role: products-s
 
@@ -268,9 +275,12 @@ metadata:
   name: search-service
   namespace: app
 spec:
+  type: NodePort
   ports:
-  - port: 9000
+  - protocol: TCP
+    port: 9000
     targetPort: 9000
+    nodePort: 30130
   selector:
     role: search-s
 
