@@ -149,7 +149,22 @@ spec:
               name: auth-secrets         
         ports:
         - containerPort: 5432
+---
 
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-db
+  namespace: app
+  labels:
+    role: auth-db
+spec:
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432
+  selector:
+    role: auth-db
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -218,8 +233,22 @@ spec:
           - secretRef:
               name: products-secrets
         ports:
-        - containerPort: 5433
-
+        - containerPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: products-db
+  namespace: app
+  labels:
+    role: products-db
+spec:
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5433
+  selector:
+    role: products-db
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -239,6 +268,9 @@ spec:
       containers:
       - name: search-consumer
         image: gfs5/challenge:cova-search-consumer
+        env:
+        - name: IS_CONSUMER
+          value: "1"
         envFrom:
           - secretRef:
               name: search-secrets         
@@ -327,3 +359,19 @@ spec:
         emptyDir: {}
       - name: db-config
         emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: search-db
+  namespace: app
+  labels:
+    role: search-db
+spec:
+  ports:
+  - protocol: TCP
+    port: 27017
+    targetPort: 27017
+  selector:
+    role: search-db
