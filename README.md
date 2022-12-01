@@ -59,3 +59,20 @@ alexisgiovoglanian@southerncode.us
 - We have added a postman collection with some basic tests. Add them to the pipeline using Newman!
 - The 'Auth' service has tests, you can run them by calling the "python manage.py test" command. Add them to the pipeline!
 - We want to split this into different repositories, suggest a way of working in distributed repos, and local development without having to deploy every single service!
+
+
+
+#sudo apt-get install minikube -y
+# minikube start
+
+##optionall install lens
+# https://k8slens.dev/
+
+#kubectl create namespace app
+kubectl config set-context --current --namespace=app
+
+kubectl apply -m manifiesto.yaml
+
+
+
+kubectl port-forward service/frontend 2525:3000 

@@ -89,15 +89,16 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      role: auth
+      role: front
   template:
     metadata:
       labels:
-        role: auth
+        role: front
     spec:
+      hostname: auth
       containers:
       - name: auth-service
-        image: eugeele/covachapp:auth-service
+        image: gfs5/challenge:cova-auth
         imagePullPolicy: Always
         envFrom:
           - secretRef:
@@ -120,7 +121,7 @@ spec:
     targetPort: 8000
     nodePort: 30110
   selector:
-    role: auth
+    role: front
 
 
 ---
@@ -168,7 +169,7 @@ spec:
     spec:
       containers:
       - name: products-service
-        image: eugeele/covachapp:products-service
+        image: gfs5/challenge:cova-products
         imagePullPolicy: Always
         envFrom:
           - secretRef:
@@ -238,7 +239,7 @@ spec:
     spec:
       containers:
       - name: search-consumer
-        image: eugeele/covachapp:search-consumer
+        image: gfs5/challenge:cova-search-consumer
         envFrom:
           - secretRef:
               name: search-secrets         
@@ -263,7 +264,7 @@ spec:
     spec:
       containers:
       - name: search-service
-        image: eugeele/covachapp:search-service
+        image: gfs5/challenge:cova-search-service
         imagePullPolicy: Always
         envFrom:
           - secretRef:
