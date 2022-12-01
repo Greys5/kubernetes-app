@@ -134,11 +134,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      role: auth
+      role: auth-db
   template:
     metadata:
       labels:
-        role: auth
+        role: auth-db
     spec:
       containers:
       - name: auth-db
@@ -219,14 +219,14 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      role: products-s
+      role: products-db
   template:
     metadata:
       labels:
-        role: products-s
+        role: products-db
     spec:
       containers:
-      - name: products-service
+      - name: products-db
         image: postgres:14.1-alpine3.15
         imagePullPolicy: Always
         envFrom:
@@ -246,7 +246,7 @@ spec:
   ports:
   - protocol: TCP
     port: 5432
-    targetPort: 5433
+    targetPort: 5432
   selector:
     role: products-db
 ---
